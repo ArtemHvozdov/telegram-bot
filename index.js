@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const grammy_1 = require("grammy");
-const bot = new grammy_1.Bot("6924837455:AAHY-eP-iRghW-0YnUYMO3XCDNcHnQdXu3Q");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const bot = new grammy_1.Bot(`${process.env.BOT_TOKEN}`);
 bot.command("start", (ctx) => ctx.reply("Welcome! The bot is running..."));
 bot.on("message", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -31,8 +36,4 @@ bot.on("message", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(msgEntities);
     }, 2000);
 }));
-// bot.hears("message", async (ctx) => {
-//     const msgText = ctx.message?.text
-//     ctx.reply(`You wtrite is ${msgText}`)
-// })
 bot.start();
