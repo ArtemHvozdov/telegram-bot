@@ -5,12 +5,22 @@ dotenv.config()
 
 const bot = new Bot(`${process.env.BOT_TOKEN}`)
 
-bot.command("start", (ctx) => ctx.reply("Welcome! The bot is running..."))
 
-bot.on("message", async (ctx) => {
-    const msgText = ctx.message?.text
-     
-    ctx.reply(`You wtrite is ${msgText}`)
-})
+const userNames = new Map<number, string>();
+
+bot.command('start', (ctx) => ctx.reply('Hello! What is your name?'));
+
+bot.on('message', async (ctx) => {
+    const chatId = ctx.chat.id;
+    const msgText = ctx.message?.text || '';
+
+    if (!userNames.has(chatId)) {
+        userNames.set(chatId, msgText);
+        await ctx.reply(`Welcome, ${msgText}!`);
+        setTimeout(() => {
+            ctx.reply('How old are you?');
+        }, 1000);
+    }
+});
 
 bot.start()

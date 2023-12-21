@@ -16,24 +16,31 @@ const grammy_1 = require("grammy");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const bot = new grammy_1.Bot(`${process.env.BOT_TOKEN}`);
-bot.command("start", (ctx) => ctx.reply("Welcome! The bot is running..."));
-bot.on("message", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+const userNames = new Map();
+bot.command('start', (ctx) => ctx.reply('Hello! What is your name?'));
+bot.on('message', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const msgText = (_a = ctx.message) === null || _a === void 0 ? void 0 : _a.text;
-    const msgEntities = ctx.entities;
-    const msgAuthor = ctx.from;
-    const msgId = ctx.inlineMessageId;
-    setTimeout(() => {
-        ctx.reply(`You wtrite is ${msgText}`);
-    }, 2000);
-    setTimeout(() => {
-        ctx.reply(`ID of this message ${msgId}`);
-    }, 2000);
-    setTimeout(() => {
-        ctx.reply(`Author of rhis message is ${msgAuthor}`);
-    }, 2000);
-    setTimeout(() => {
-        console.log(msgEntities);
-    }, 2000);
+    const chatId = ctx.chat.id;
+    const msgText = ((_a = ctx.message) === null || _a === void 0 ? void 0 : _a.text) || '';
+    if (!userNames.has(chatId)) {
+        // Если у пользователя еще нет сохраненного имени, сохраняем его
+        userNames.set(chatId, msgText);
+        yield ctx.reply(`Welcome, ${msgText}!`);
+        setTimeout(() => {
+            ctx.reply('How old are you?');
+        }, 1000);
+    }
+    else {
+        // Иначе, бот уже знает имя пользователя и задает вопрос о возрасте
+        // Можно добавить здесь обработку возраста
+    }
 }));
+// bot.command("start", (ctx) => ctx.reply("Hello! What is your name?"))
+// bot.on("message", async (ctx) => {
+//     const msgText = ctx.message?.text
+//     ctx.reply(`Welcome, ${msgText}`)
+//     setTimeout(() => {
+//         ctx.reply('How old are you?')
+//     }, 500)
+// })
 bot.start();
