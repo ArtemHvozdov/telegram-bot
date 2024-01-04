@@ -21,15 +21,17 @@ bot.on('message', async (ctx) => {
         userNames.set(chatId, msgText);
         await ctx.reply(`Welcome, ${msgText}!`);
 
-        const data = await axios.get('http://localhost:8080/api/sign-in')
+        const result = await axios.get('http://localhost:8080/api/sign-in')
         .catch((error) => {
             console.error('Error when receiving deep link:', error);
             ctx.reply('An error has occurred. Try later.');
             return;
         });
 
-        if (data) {
-            ctx.reply(data.data.deepLink);
+        if (result) {
+            ctx.reply(result.data.deepLink, {
+                parse_mode: 'HTML'
+            });
         }
     }
 });
