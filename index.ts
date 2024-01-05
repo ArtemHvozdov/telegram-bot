@@ -1,5 +1,6 @@
 import { Bot } from 'grammy'
 import axios from 'axios'
+import perma from 'perma'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -21,18 +22,27 @@ bot.on('message', async (ctx) => {
         userNames.set(chatId, msgText);
         await ctx.reply(`Welcome, ${msgText}!`);
 
-        const result = await axios.get('http://localhost:8080/api/sign-in')
+        const response = await axios.get('http://localhost:8080/api/sign-in')
         .catch((error) => {
             console.error('Error when receiving deep link:', error);
             ctx.reply('An error has occurred. Try later.');
             return;
         });
 
-        if (result) {
-            ctx.reply(result.data.deepLink, {
+        if (response) {   
+            const longUrl = encodeURIComponent(JSON.stringify(response.data))
+
+            const shortUrl: string = perma(longUrl);
+                
+            const url = `iden3comm://?request_uri={${shortUrl}}`
+
+            const authUrl = `<a href="${url}">Autorization link</a>`
+            
+            ctx.reply(authUrl, {
                 parse_mode: 'HTML'
             });
         }
+        
     }
 });
 
